@@ -240,6 +240,7 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             min-height: 400px;
             backdrop-filter: blur(10px);
+            position: relative;
         }
 
         /* Photo Section - Left Side */
@@ -275,6 +276,23 @@
             z-index: 10;
         }
 
+        /* AI Credit - Bottom Right of Card */
+        .ai-credit {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-family: 'Arial', sans-serif;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
         /* Text Section - Right Side */
         .text-section {
             flex: 1;
@@ -286,7 +304,7 @@
         }
 
         .romantic-title {
-            font-size: 2em;
+            font-size: 1.8em;
             color: #ff6b9d;
             margin-bottom: 20px;
             font-weight: bold;
@@ -425,6 +443,11 @@
                 font-size: 0.75em;
                 padding: 4px 10px;
             }
+
+            .ai-credit {
+                font-size: 0.7em;
+                padding: 4px 10px;
+            }
         }
     </style>
 </head>
@@ -486,7 +509,7 @@
                     </div>
                 </div>
 
-<!-- Text Section - Right -->
+                <!-- Text Section - Right -->
                 <div class="text-section">
                     <div class="romantic-title">
                         🎄 Untuk MY ISTRI DEDERIS EH AMARIS 🎄
@@ -505,7 +528,7 @@
                     <div class="heart-divider">✨</div>
 
                     <p class="romantic-message">
-                        Meryy Christmas MY MY, walau ga ngerayain, semoga kamu bisa merasakan suasana yang berbahagia ini. mweheheheh
+                        Merry Christmas MY MY, walau ga ngerayain, semoga kamu bisa merasakan suasana yang berbahagia ini. mweheheheh
                     </p>
 
                     <div class="heart-divider">❤️</div>
@@ -513,6 +536,11 @@
                     <p class="romantic-message" style="font-style: italic; color: #ff6b9d; font-weight: bold;">
                         LOPE LOPE UNTUK KAMU MY ISTRI
                     </p>
+                </div>
+
+                <!-- AI Credit - Bottom Right -->
+                <div class="ai-credit">
+                    Ini dibuat pake AI, sorry :'
                 </div>
             </div>
         </div>

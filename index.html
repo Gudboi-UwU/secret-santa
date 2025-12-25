@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Natal ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffd1dc 0%, #fff5f7 25%, #e6f3ff 50%, #f0e6ff 75%, #ffe6f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Mute Button */
+        .mute-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #ff9999;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 153, 153, 0.3);
+        }
+
+        .mute-btn:hover {
+            transform: scale(1.1);
+            background: #fff;
+            box-shadow: 0 6px 20px rgba(255, 153, 153, 0.5);
+        }
+
+        /* Snowflakes */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5em;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Main Container */
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* Gift Box Container */
+        .gift-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-container:hover {
+            transform: scale(1.05);
+        }
+
+        .gift-box {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 50px auto 0;
+            background: linear-gradient(135deg, #ffb3c1 0%, #ff9999 100%);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(255, 153, 153, 0.4);
+            transition: all 0.6s ease;
+        }
+
+        /* Ribbon */
+        .ribbon-v {
+            position: absolute;
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .ribbon-h {
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(180deg, #ffd700 0%, #ffed4e 100%);
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Gift Lid */
+        .gift-lid {
+            position: absolute;
+            width: 220px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff9999 0%, #ff6b6b 100%);
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .bow {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            top: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.8s ease;
+        }
+
+        .bow::before,
+        .bow::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ffd700;
+            border-radius: 50% 50% 0 50%;
+            box-shadow: 0 3px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .bow::before {
+            left: 0;
+            transform: rotate(-45deg);
+        }
+
+        .bow::after {
+            right: 0;
+            transform: rotate(45deg);
+        }
+
+        /* Opening Animation */
+        .gift-container.opened .gift-lid {
+            transform: translateX(-50%) translateY(-150px) rotateX(45deg);
+            opacity: 0;
+        }
+
+        .gift-container.opened .bow {
+            transform: translateX(-50%) translateY(-200px) rotate(180deg);
+            opacity: 0;
+        }
+
+        /* Hide gift when opened */
+        .gift-container.opened .gift-box {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        /* Message Container - HERO CARD */
+        .message-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .message-container.show {
+            opacity: 1;
+            animation: fadeInScale 1s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .message-text {
+            font-size: 3em;
+            color: #ff6b9d;
+            text-shadow: 3px 3px 10px rgba(255, 107, 157, 0.3);
+            margin-bottom: 30px;
+            font-weight: bold;
+            animation: glow 2s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 3px 3px 10px rgba(255, 107, 157, 0.3),
+                             0 0 20px rgba(255, 107, 157, 0.2);
+            }
+            50% {
+                text-shadow: 3px 3px 20px rgba(255, 107, 157, 0.6),
+                             0 0 40px rgba(255, 107, 157, 0.4);
+            }
+        }
+
+        /* Hero Card - Rectangle with Photo Left, Text Right */
+        .hero-card {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-height: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Photo Section - Left Side */
+        .photo-section {
+            flex: 0 0 45%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .hero-card:hover .photo-section img {
+            transform: scale(1.05);
+        }
+
+        /* Photo Credit - Bottom Left */
+        .photo-credit {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-family: 'Arial', sans-serif;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        /* Text Section - Right Side */
+        .text-section {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(255, 240, 245, 0.9) 0%, rgba(255, 250, 250, 0.9) 100%);
+        }
+
+        .romantic-title {
+            font-size: 2em;
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .romantic-message {
+            font-size: 1.2em;
+            color: #666;
+            line-height: 1.8;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .romantic-message:last-child {
+            margin-bottom: 0;
+        }
+
+        .heart-divider {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 15px 0;
+            color: #ff9999;
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: sparkleAnim 2s ease-in-out infinite;
+            z-index: 5;
+        }
+
+        @keyframes sparkleAnim {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Instruction Text */
+        .instruction {
+            color: #ff6b9d;
+            font-size: 1.3em;
+            margin-top: 30px;
+            text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        /* Decorative Elements */
+        .ornament {
+            position: fixed;
+            font-size: 2em;
+            animation: swing 3s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        @keyframes swing {
+            0%, 100% {
+                transform: rotate(-10deg);
+            }
+            50% {
+                transform: rotate(10deg);
+            }
+        }
+
+        .heart {
+            position: fixed;
+            color: #ff9999;
+            font-size: 1.5em;
+            animation: float 4s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .message-text {
+                font-size: 2em;
+                margin-bottom: 20px;
+            }
+
+            .hero-card {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .photo-section {
+                flex: 0 0 300px;
+            }
+
+            .text-section {
+                padding: 30px 25px;
+            }
+
+            .romantic-title {
+                font-size: 1.5em;
+            }
+
+            .romantic-message {
+                font-size: 1em;
+            }
+
+            .gift-box {
+                width: 150px;
+                height: 150px;
+            }
+
+            .photo-credit {
+                font-size: 0.75em;
+                padding: 4px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop>
+        <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Jingle%20Bells.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Mute Button -->
+    <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+
+    <!-- Snowflakes -->
+    <div id="snowflakes"></div>
+
+    <!-- Sparkles -->
+    <div id="sparkles"></div>
+
+    <!-- Decorative Ornaments -->
+    <div class="ornament" style="top: 10%; left: 10%;">🎄</div>
+    <div class="ornament" style="top: 15%; right: 10%;">🎄</div>
+    <div class="ornament" style="bottom: 10%; left: 15%;">⭐</div>
+    <div class="ornament" style="bottom: 15%; right: 15%;">⭐</div>
+
+    <!-- Hearts -->
+    <div class="heart" style="top: 20%; left: 5%;">❤️</div>
+    <div class="heart" style="top: 25%; right: 5%; animation-delay: 1s;">❤️</div>
+    <div class="heart" style="bottom: 20%; left: 8%; animation-delay: 2s;">💝</div>
+    <div class="heart" style="bottom: 25%; right: 8%; animation-delay: 1.5s;">💝</div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Gift Box -->
+        <div class="gift-container" id="giftContainer" onclick="openGift()">
+            <div class="gift-box">
+                <div class="ribbon-v"></div>
+                <div class="ribbon-h"></div>
+                <div class="gift-lid">
+                    <div class="bow"></div>
+                </div>
+            </div>
+        </div>
+
+        <p class="instruction" id="instruction">🎁 Klik kotak hadiah! 🎁</p>
+
+        <!-- Message Container - HERO CARD -->
+        <div class="message-container" id="messageContainer">
+            <h1 class="message-text">Selamat Natal My Istri ❤️</h1>
+
+            <div class="hero-card">
+                <!-- Photo Section - Left -->
+                <div class="photo-section">
+                    <!-- GANTI src DENGAN FOTO ANDA -->
+                    <img src="amaris.png" alt="Foto Istri">
+
+                    <!-- Photo Credit -->
+                    <div class="photo-credit">
+                        Image: @Kurotsuki Paparis
+                    </div>
+                </div>
+
+<!-- Text Section - Right -->
+                <div class="text-section">
+                    <div class="romantic-title">
+                        🎄 Untuk MY ISTRI DEDERIS EH AMARIS 🎄
+                    </div>
+
+                    <p class="romantic-message">
+                        Aku ga bisa berkata yang manis-manis, cuma bisa bilang.....
+                    </p>
+
+                    <div class="heart-divider">💕</div>
+
+                    <p class="romantic-message">
+                        Kalau kamu itu salah satu orang yang bikin aku bahagia belakangan ini, yang bisa biin aku senyum-senyum.
+                    </p>
+
+                    <div class="heart-divider">✨</div>
+
+                    <p class="romantic-message">
+                        Meryy Christmas MY MY, walau ga ngerayain, semoga kamu bisa merasakan suasana yang berbahagia ini. mweheheheh
+                    </p>
+
+                    <div class="heart-divider">❤️</div>
+
+                    <p class="romantic-message" style="font-style: italic; color: #ff6b9d; font-weight: bold;">
+                        LOPE LOPE UNTUK KAMU MY ISTRI
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-play music
+        window.addEventListener('load', function() {
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.3;
+            music.play().catch(e => {
+                console.log('Autoplay prevented. User interaction needed.');
+            });
+        });
+
+        // Mute/Unmute function
+        let isMuted = false;
+        function toggleMute() {
+            const music = document.getElementById('bgMusic');
+            const btn = document.getElementById('muteBtn');
+
+            isMuted = !isMuted;
+            music.muted = isMuted;
+            btn.textContent = isMuted ? '🔇' : '🔊';
+        }
+
+        // Open gift function
+        let isOpened = false;
+        function openGift() {
+            if (isOpened) return;
+
+            isOpened = true;
+            const container = document.getElementById('giftContainer');
+            const message = document.getElementById('messageContainer');
+            const instruction = document.getElementById('instruction');
+
+            container.classList.add('opened');
+            instruction.style.display = 'none';
+
+            setTimeout(() => {
+                message.classList.add('show');
+                createConfetti();
+            }, 800);
+        }
+
+        // Create snowflakes
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            const snowflakeChars = ['❄️', '❅', '❆', '✻'];
+
+            for (let i = 0; i < 20; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.textContent = snowflakeChars[Math.floor(Math.random() * snowflakeChars.length)];
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+                container.appendChild(snowflake);
+            }
+        }
+
+        // Create sparkles
+        function createSparkles() {
+            const container = document.getElementById('sparkles');
+
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(sparkle);
+            }
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#ff9999', '#ffd700', '#ffb3c1', '#e6f3ff', '#f0e6ff'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = '50%';
+                confetti.style.top = '50%';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.zIndex = '100';
+                confetti.style.pointerEvents = 'none';
+
+                document.body.appendChild(confetti);
+
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 200 + 100;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity - 200;
+
+                animateConfetti(confetti, vx, vy);
+            }
+        }
+
+        function animateConfetti(element, vx, vy) {
+            let x = window.innerWidth / 2;
+            let y = window.innerHeight / 2;
+            let opacity = 1;
+            const gravity = 300;
+            let lastTime = Date.now();
+
+            function update() {
+                const now = Date.now();
+                const dt = (now - lastTime) / 1000;
+                lastTime = now;
+
+                vy += gravity * dt;
+                x += vx * dt;
+                y += vy * dt;
+                opacity -= dt * 0.5;
+
+                element.style.left = x + 'px';
+                element.style.top = y + 'px';
+                element.style.opacity = opacity;
+
+                if (opacity > 0 && y < window.innerHeight + 100) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.remove();
+                }
+            }
+
+            update();
+        }
+
+        // Initialize
+        createSnowflakes();
+        createSparkles();
+    </script>
+</body>
+</html>

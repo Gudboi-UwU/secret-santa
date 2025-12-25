@@ -24,6 +24,27 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            cursor: default;
+        }
+
+        /* Cursor Trail Snowflake - UPDATED: 3 seconds duration */
+        .cursor-snowflake {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1.2em;
+            animation: cursorSnowfall 3s ease-out forwards;
+        }
+
+        @keyframes cursorSnowfall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(120px) rotate(360deg) scale(0.2);
+            }
         }
 
         /* Music Popup Modal */
@@ -700,37 +721,78 @@
     <script>
         let isMuted = false;
         let isOpened = false;
-        let musicStarted = false;
+        let musicPlaying = false;
+
+        // Cursor trail snowflakes - ENHANCED
+        const snowflakeEmojis = ['❄️', '❅', '❆', '✻', '🎄', '⭐'];
+        let lastTrailTime = 0;
+        const trailInterval = 25; // REDUCED from 50ms to 25ms - MORE FREQUENT!
+        let currentMouseX = window.innerWidth / 2;
+        let currentMouseY = window.innerHeight / 2;
+
+        // Function to create a snowflake at specific position
+        function createCursorSnowflake(x, y) {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'cursor-snowflake';
+            snowflake.textContent = snowflakeEmojis[Math.floor(Math.random() * snowflakeEmojis.length)];
+            snowflake.style.left = x + 'px';
+            snowflake.style.top = y + 'px';
+
+            document.body.appendChild(snowflake);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                snowflake.remove();
+            }, 3000);
+        }
+
+        // Mouse move event for cursor trail - ON MOVE
+        document.addEventListener('mousemove', function(e) {
+            currentMouseX = e.pageX;
+            currentMouseY = e.pageY;
+
+            const now = Date.now();
+
+            if (now - lastTrailTime < trailInterval) return;
+            lastTrailTime = now;
+
+            createCursorSnowflake(currentMouseX, currentMouseY);
+        });
+
+        // Continuous snowflake generation even when cursor is idle
+        setInterval(function() {
+            // Generate snowflake at current cursor position every 200ms
+            createCursorSnowflake(currentMouseX, currentMouseY);
+        }, 100); // Spawn even when idle
 
         // Start music function - Called from popup
-        function startMusic(playMusic) {
+        function startMusic(shouldPlay) {
             const popup = document.getElementById('musicPopup');
             const music = document.getElementById('bgMusic');
             const btn = document.getElementById('muteBtn');
 
-            // Hide popup
             popup.classList.add('hidden');
+            music.volume = 0.5;
 
-            if (playMusic) {
-                // User clicked YES - Play music
-                music.volume = 0.5;
-                music.play().then(() => {
-                    musicStarted = true;
-                    isMuted = false;
-                    btn.textContent = '🔊';
-                    console.log('🎵 Musik dimulai!');
-                }).catch(e => {
-                    console.log('Music play error:', e);
-                    // If music fails, just hide popup and continue
-                });
+            if (shouldPlay) {
+                music.muted = false;
+                isMuted = false;
+                btn.textContent = '🔊';
+                console.log('🎵 Musik dimulai (unmuted)');
             } else {
-                // User clicked NO - Mute music
                 music.muted = true;
                 isMuted = true;
                 btn.textContent = '🔇';
-                musicStarted = true;
-                console.log('🔇 Musik di-mute');
+                console.log('🎵 Musik dimulai (muted)');
             }
+
+            music.play().then(() => {
+                musicPlaying = true;
+                console.log('✅ Musik berhasil diputar');
+            }).catch(e => {
+                console.log('❌ Music play error:', e);
+                musicPlaying = false;
+            });
         }
 
         // Mute/Unmute function
@@ -738,21 +800,22 @@
             const music = document.getElementById('bgMusic');
             const btn = document.getElementById('muteBtn');
 
-            if (!musicStarted) {
-                // If music never started, start it now
+            if (!musicPlaying) {
                 music.volume = 0.5;
+                music.muted = false;
                 music.play().then(() => {
-                    musicStarted = true;
+                    musicPlaying = true;
                     isMuted = false;
                     btn.textContent = '🔊';
+                    console.log('🎵 Musik dimulai dari tombol mute');
                 }).catch(e => {
-                    console.log('Music play error:', e);
+                    console.log('❌ Music play error:', e);
                 });
             } else {
-                // Toggle mute
                 isMuted = !isMuted;
                 music.muted = isMuted;
                 btn.textContent = isMuted ? '🔇' : '🔊';
+                console.log(isMuted ? '🔇 Musik di-mute' : '🔊 Musik unmuted');
             }
         }
 
@@ -762,15 +825,15 @@
 
             isOpened = true;
 
-            // If music not started yet, try to start it
             const music = document.getElementById('bgMusic');
-            if (!musicStarted && !isMuted) {
+            if (!musicPlaying) {
                 music.volume = 0.5;
+                music.muted = isMuted;
                 music.play().then(() => {
-                    musicStarted = true;
-                    console.log('🎵 Musik dimulai saat kotak dibuka!');
+                    musicPlaying = true;
+                    console.log('🎵 Musik dimulai saat kotak dibuka');
                 }).catch(e => {
-                    console.log('Music play error:', e);
+                    console.log('❌ Music play error:', e);
                 });
             }
 
